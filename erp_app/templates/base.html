@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>ERP System</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('dashboard.index') }}" class="{% if request.endpoint == 'dashboard.index' %}active{% endif %}">Dashboard</a></li>
+            <li><a href="{{ url_for('clients.list_clients') }}" class="{% if 'clients' in request.endpoint %}active{% endif %}">Clienti</a></li>
+            <li><a href="{{ url_for('products.list_products') }}" class="{% if 'products' in request.endpoint %}active{% endif %}">Produse</a></li>
+            <li><a href="{{ url_for('invoices.list_invoices') }}" class="{% if 'invoices' in request.endpoint %}active{% endif %}">Facturi</a></li>
+            <li><a href="{{ url_for('orders.list_orders') }}" class="{% if 'orders' in request.endpoint %}active{% endif %}">Comenzi</a></li>
+            <li><a href="{{ url_for('employees.list_employees') }}" class="{% if 'employees' in request.endpoint %}active{% endif %}">Angajati</a></li>
+            <li><a href="{{ url_for('inventory.list_movements') }}" class="{% if 'inventory' in request.endpoint %}active{% endif %}">Stocuri</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span>{{ current_user.username }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm">Deconectare</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="{% if current_user.is_authenticated %}content{% else %}content-full{% endif %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

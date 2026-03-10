@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Facturi - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Facturi</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('invoices.add_invoice') }}" class="btn btn-primary">+ Factura Noua</a>
+        <a href="{{ url_for('office.excel_invoices') }}" class="btn btn-excel btn-sm">Export Excel</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Lista Facturi ({{ invoices.total }})</h2>
+        <form method="GET" class="form-inline">
+            <select name="status" class="form-control" style="width:150px" onchange="this.form.submit()">
+                <option value="">Toate</option>
+                {% for s in ['draft', 'sent', 'paid', 'overdue', 'cancelled'] %}
+                <option value="{{ s }}" {% if s == selected_status %}selected{% endif %}>{{ s|upper }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Nr. Factura</th><th>Client</th><th>Data</th><th>Scadenta</th><th>Total</th><th>Status</th><th>Actiuni</th></tr></thead>
+            <tbody>
+            {% for inv in invoices.items %}
+            <tr>
+                <td><a href="{{ url_for('invoices.view_invoice', id=inv.id) }}">{{ inv.number }}</a></td>
+                <td>{{ inv.client.name if inv.client else '-' }}</td>
+                <td>{{ inv.date.strftime('%d.%m.%Y') if inv.date else '-' }}</td>
+                <td>{{ inv.due_date.strftime('%d.%m.%Y') if inv.due_date else '-' }}</td>
+                <td>{{ "%.2f"|format(inv.total) }} RON</td>
+                <td><span class="badge badge-{{ inv.status }}">{{ inv.status }}</span></td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('office.word_invoice', id=inv.id) }}" class="btn btn-word btn-sm">Word</a>
+                        <form method="POST" action="{{ url_for('invoices.delete_invoice', id=inv.id) }}" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Sterge</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center">Nicio factura</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if invoices.pages > 1 %}
+        <div class="pagination">
+            {% for page_num in invoices.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}<a href="?page={{ page_num }}&status={{ selected_status }}" class="{% if page_num == invoices.page %}active{% endif %}">{{ page_num }}</a>
+                {% else %}<span>...</span>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

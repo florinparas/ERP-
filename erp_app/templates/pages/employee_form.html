@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editare' if employee else 'Adaugare' }} Angajat - ERP{% endblock %}
+{% block content %}
+<div class="page-header"><h1>{{ 'Editare Angajat' if employee else 'Angajat Nou' }}</h1></div>
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Prenume *</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ employee.first_name if employee else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Nume *</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ employee.last_name if employee else '' }}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ employee.email if employee else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="text" name="phone" class="form-control" value="{{ employee.phone if employee else '' }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Pozitie</label>
+                    <input type="text" name="position" class="form-control" value="{{ employee.position if employee else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Departament</label>
+                    <input type="text" name="department" class="form-control" value="{{ employee.department if employee else '' }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Salariu (RON)</label>
+                    <input type="number" name="salary" class="form-control" step="0.01" value="{{ employee.salary if employee else 0 }}">
+                </div>
+                <div class="form-group">
+                    <label>Data angajare</label>
+                    <input type="date" name="hire_date" class="form-control" value="{{ employee.hire_date.strftime('%Y-%m-%d') if employee and employee.hire_date else '' }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CNP</label>
+                    <input type="text" name="cnp" class="form-control" value="{{ employee.cnp if employee else '' }}" maxlength="13">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Adresa</label>
+                <textarea name="address" class="form-control">{{ employee.address if employee else '' }}</textarea>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Salveaza</button>
+                <a href="{{ url_for('employees.list_employees') }}" class="btn btn-outline">Anuleaza</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

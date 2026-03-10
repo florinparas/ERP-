@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('office.word_report') }}" class="btn btn-word btn-sm">Raport Word</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Clienti</h3>
+        <div class="value">{{ stats.total_clients }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Produse</h3>
+        <div class="value">{{ stats.total_products }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Facturi</h3>
+        <div class="value">{{ stats.total_invoices }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Comenzi</h3>
+        <div class="value">{{ stats.total_orders }}</div>
+    </div>
+    <div class="stat-card success-card">
+        <h3>Venituri Incasate</h3>
+        <div class="value">{{ "%.2f"|format(stats.revenue) }} RON</div>
+    </div>
+    <div class="stat-card">
+        <h3>Angajati</h3>
+        <div class="value">{{ stats.total_employees }}</div>
+    </div>
+    <div class="stat-card alert-card">
+        <h3>Facturi Neplatite</h3>
+        <div class="value">{{ stats.unpaid_invoices }}</div>
+    </div>
+    <div class="stat-card alert-card">
+        <h3>Stoc Scazut</h3>
+        <div class="value">{{ stats.low_stock_products }}</div>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+    <div class="card">
+        <div class="card-header"><h2>Ultimele Facturi</h2></div>
+        <div class="card-body">
+            <table>
+                <thead><tr><th>Nr.</th><th>Client</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for inv in recent_invoices %}
+                <tr>
+                    <td><a href="{{ url_for('invoices.view_invoice', id=inv.id) }}">{{ inv.number }}</a></td>
+                    <td>{{ inv.client.name if inv.client else '-' }}</td>
+                    <td>{{ "%.2f"|format(inv.total) }} RON</td>
+                    <td><span class="badge badge-{{ inv.status }}">{{ inv.status }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align:center">Nicio factura</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h2>Ultimele Comenzi</h2></div>
+        <div class="card-body">
+            <table>
+                <thead><tr><th>Nr.</th><th>Client</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td><a href="{{ url_for('orders.view_order', id=order.id) }}">{{ order.number }}</a></td>
+                    <td>{{ order.client.name if order.client else '-' }}</td>
+                    <td>{{ "%.2f"|format(order.total) }} RON</td>
+                    <td><span class="badge badge-{{ order.status }}">{{ order.status }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align:center">Nicio comanda</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

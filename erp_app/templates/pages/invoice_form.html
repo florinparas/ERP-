@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Factura Noua - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Factura Noua</h1>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nr. Factura</label>
+                    <input type="text" class="form-control" value="{{ invoice_number }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Client *</label>
+                    <select name="client_id" class="form-control" required>
+                        <option value="">Selecteaza client</option>
+                        {% for c in clients %}
+                        <option value="{{ c.id }}">{{ c.name }}{% if c.company %} ({{ c.company }}){% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Data factura</label>
+                    <input type="date" name="date" class="form-control" value="{{ now().strftime('%Y-%m-%d') if now is defined else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Data scadenta</label>
+                    <input type="date" name="due_date" class="form-control">
+                </div>
+            </div>
+
+            <h3 style="margin: 20px 0 10px">Articole factura</h3>
+            <div id="items-container">
+                <div class="item-row form-row">
+                    <div class="form-group">
+                        <label>Descriere</label>
+                        <input type="text" name="item_description[]" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantitate</label>
+                        <input type="number" name="item_quantity[]" class="form-control" step="0.01" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pret unitar</label>
+                        <input type="number" name="item_price[]" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>TVA%</label>
+                        <input type="number" name="item_vat[]" class="form-control" value="19">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="addItemRow()" style="margin:10px 0 20px">+ Adauga articol</button>
+
+            <div class="form-group">
+                <label>Observatii</label>
+                <textarea name="notes" class="form-control"></textarea>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Salveaza Factura</button>
+                <a href="{{ url_for('invoices.list_invoices') }}" class="btn btn-outline">Anuleaza</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

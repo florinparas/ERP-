@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Inregistrare - ERP{% endblock %}
+{% block content %}
+<div class="login-box">
+    <h1>Cont Nou</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label>Utilizator</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Parola</label>
+            <input type="password" name="password" class="form-control" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Creeaza cont</button>
+    </form>
+    <p style="text-align:center; margin-top:15px; font-size:0.85rem">
+        <a href="{{ url_for('auth.login') }}">Ai deja cont? Autentifica-te</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Factura {{ invoice.number }} - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Factura {{ invoice.number }}</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('office.word_invoice', id=invoice.id) }}" class="btn btn-word">Descarca Word</a>
+        <a href="{{ url_for('office.excel_invoices') }}" class="btn btn-excel">Export Excel</a>
+        <form method="POST" action="{{ url_for('office.email_invoice', id=invoice.id) }}" style="display:inline">
+            <button type="submit" class="btn btn-outlook">Trimite Email</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="form-row" style="margin-bottom:20px">
+            <div>
+                <p><strong>Client:</strong> {{ invoice.client.name if invoice.client else '-' }}</p>
+                {% if invoice.client and invoice.client.company %}
+                <p><strong>Companie:</strong> {{ invoice.client.company }}</p>
+                {% endif %}
+                {% if invoice.client and invoice.client.cui %}
+                <p><strong>CUI:</strong> {{ invoice.client.cui }}</p>
+                {% endif %}
+            </div>
+            <div style="text-align:right">
+                <p><strong>Data:</strong> {{ invoice.date.strftime('%d.%m.%Y') if invoice.date else '-' }}</p>
+                <p><strong>Scadenta:</strong> {{ invoice.due_date.strftime('%d.%m.%Y') if invoice.due_date else '-' }}</p>
+                <p><strong>Status:</strong> <span class="badge badge-{{ invoice.status }}">{{ invoice.status }}</span></p>
+            </div>
+        </div>
+
+        <table>
+            <thead><tr><th>#</th><th>Descriere</th><th>Cantitate</th><th>Pret unitar</th><th>TVA</th><th>Total</th></tr></thead>
+            <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ "%.2f"|format(item.unit_price) }} RON</td>
+                <td>{{ item.vat_rate }}%</td>
+                <td>{{ "%.2f"|format(item.total) }} RON</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><td colspan="5" style="text-align:right"><strong>Subtotal:</strong></td><td>{{ "%.2f"|format(invoice.subtotal) }} RON</td></tr>
+                <tr><td colspan="5" style="text-align:right"><strong>TVA:</strong></td><td>{{ "%.2f"|format(invoice.vat_total) }} RON</td></tr>
+                <tr><td colspan="5" style="text-align:right"><strong style="font-size:1.1rem">TOTAL:</strong></td><td><strong style="font-size:1.1rem">{{ "%.2f"|format(invoice.total) }} RON</strong></td></tr>
+            </tfoot>
+        </table>
+
+        <div style="margin-top:20px">
+            <strong>Schimba status:</strong>
+            <div class="btn-group" style="margin-top:8px">
+                {% for status in ['draft', 'sent', 'paid', 'overdue', 'cancelled'] %}
+                <form method="POST" action="{{ url_for('invoices.update_status', id=invoice.id, status=status) }}" style="display:inline">
+                    <button type="submit" class="btn btn-sm {% if invoice.status == status %}btn-primary{% else %}btn-outline{% endif %}">{{ status|upper }}</button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

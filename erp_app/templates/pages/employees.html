@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Angajati - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Angajati</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('employees.add_employee') }}" class="btn btn-primary">+ Angajat Nou</a>
+        <a href="{{ url_for('office.excel_employees') }}" class="btn btn-excel btn-sm">Export Excel</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h2>Lista Angajati ({{ employees.total }})</h2>
+        <form method="GET" class="form-inline">
+            <input type="text" name="search" class="form-control" placeholder="Cauta..." value="{{ search }}" style="width:150px">
+            <select name="department" class="form-control" style="width:150px">
+                <option value="">Toate dept.</option>
+                {% for d in departments %}
+                <option value="{{ d }}" {% if d == selected_department %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline btn-sm">Filtreaza</button>
+        </form>
+    </div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Nume</th><th>Pozitie</th><th>Departament</th><th>Email</th><th>Telefon</th><th>Actiuni</th></tr></thead>
+            <tbody>
+            {% for emp in employees.items %}
+            <tr>
+                <td>{{ emp.full_name }}</td>
+                <td>{{ emp.position or '-' }}</td>
+                <td>{{ emp.department or '-' }}</td>
+                <td>{{ emp.email or '-' }}</td>
+                <td>{{ emp.phone or '-' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('employees.edit_employee', id=emp.id) }}" class="btn btn-outline btn-sm">Editeaza</a>
+                        <form method="POST" action="{{ url_for('employees.delete_employee', id=emp.id) }}" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Sterge</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center">Niciun angajat</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

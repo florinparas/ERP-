@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Comanda {{ order.number }} - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Comanda {{ order.number }}</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('office.word_order', id=order.id) }}" class="btn btn-word">Descarca Word</a>
+        <form method="POST" action="{{ url_for('office.email_order', id=order.id) }}" style="display:inline">
+            <button type="submit" class="btn btn-outlook">Trimite Email</button>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="form-row" style="margin-bottom:20px">
+            <div>
+                <p><strong>Client:</strong> {{ order.client.name if order.client else '-' }}</p>
+            </div>
+            <div style="text-align:right">
+                <p><strong>Data:</strong> {{ order.date.strftime('%d.%m.%Y') if order.date else '-' }}</p>
+                <p><strong>Livrare:</strong> {{ order.delivery_date.strftime('%d.%m.%Y') if order.delivery_date else '-' }}</p>
+                <p><strong>Status:</strong> <span class="badge badge-{{ order.status }}">{{ order.status }}</span></p>
+            </div>
+        </div>
+        <table>
+            <thead><tr><th>#</th><th>Produs</th><th>Cantitate</th><th>Pret</th><th>Total</th></tr></thead>
+            <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.product.name if item.product else '-' }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ "%.2f"|format(item.unit_price) }} RON</td>
+                <td>{{ "%.2f"|format(item.total) }} RON</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr><td colspan="4" style="text-align:right"><strong>TOTAL:</strong></td><td><strong>{{ "%.2f"|format(order.total) }} RON</strong></td></tr>
+            </tfoot>
+        </table>
+        <div style="margin-top:20px">
+            <strong>Schimba status:</strong>
+            <div class="btn-group" style="margin-top:8px">
+                {% for status in ['new', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] %}
+                <form method="POST" action="{{ url_for('orders.update_status', id=order.id, status=status) }}" style="display:inline">
+                    <button type="submit" class="btn btn-sm {% if order.status == status %}btn-primary{% else %}btn-outline{% endif %}">{{ status|upper }}</button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

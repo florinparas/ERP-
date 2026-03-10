@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Comenzi - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Comenzi</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('orders.add_order') }}" class="btn btn-primary">+ Comanda Noua</a>
+        <a href="{{ url_for('office.excel_orders') }}" class="btn btn-excel btn-sm">Export Excel</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h2>Lista Comenzi ({{ orders.total }})</h2>
+        <form method="GET" class="form-inline">
+            <select name="status" class="form-control" style="width:150px" onchange="this.form.submit()">
+                <option value="">Toate</option>
+                {% for s in ['new', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] %}
+                <option value="{{ s }}" {% if s == selected_status %}selected{% endif %}>{{ s|upper }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Nr.</th><th>Client</th><th>Data</th><th>Livrare</th><th>Total</th><th>Status</th><th>Actiuni</th></tr></thead>
+            <tbody>
+            {% for order in orders.items %}
+            <tr>
+                <td><a href="{{ url_for('orders.view_order', id=order.id) }}">{{ order.number }}</a></td>
+                <td>{{ order.client.name if order.client else '-' }}</td>
+                <td>{{ order.date.strftime('%d.%m.%Y') if order.date else '-' }}</td>
+                <td>{{ order.delivery_date.strftime('%d.%m.%Y') if order.delivery_date else '-' }}</td>
+                <td>{{ "%.2f"|format(order.total) }} RON</td>
+                <td><span class="badge badge-{{ order.status }}">{{ order.status }}</span></td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('office.word_order', id=order.id) }}" class="btn btn-word btn-sm">Word</a>
+                        <form method="POST" action="{{ url_for('orders.delete_order', id=order.id) }}" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Sterge</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center">Nicio comanda</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

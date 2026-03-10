@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Stocuri - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Gestiune Stocuri</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('inventory.add_movement') }}" class="btn btn-primary">+ Miscare Stoc</a>
+        <a href="{{ url_for('office.excel_inventory') }}" class="btn btn-excel btn-sm">Export Excel</a>
+    </div>
+</div>
+
+{% if low_stock %}
+<div class="alert alert-warning">
+    <strong>Alerta stoc scazut:</strong>
+    {% for p in low_stock %}
+    {{ p.name }} ({{ p.stock_quantity }} {{ p.unit }}){% if not loop.last %}, {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Miscari Stoc</h2>
+        <form method="GET" class="form-inline">
+            <select name="product_id" class="form-control" style="width:200px" onchange="this.form.submit()">
+                <option value="">Toate produsele</option>
+                {% for p in products %}
+                <option value="{{ p.id }}" {% if p.id == selected_product %}selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Data</th><th>Produs</th><th>Tip</th><th>Cantitate</th><th>Referinta</th><th>Note</th></tr></thead>
+            <tbody>
+            {% for mov in movements.items %}
+            <tr>
+                <td>{{ mov.created_at.strftime('%d.%m.%Y %H:%M') if mov.created_at else '-' }}</td>
+                <td>{{ mov.product.name if mov.product else '-' }}</td>
+                <td>
+                    {% if mov.movement_type == 'in' %}<span class="badge badge-paid">INTRARE</span>
+                    {% elif mov.movement_type == 'out' %}<span class="badge badge-overdue">IESIRE</span>
+                    {% else %}<span class="badge badge-draft">AJUSTARE</span>{% endif %}
+                </td>
+                <td>{{ mov.quantity }}</td>
+                <td>{{ mov.reference or '-' }}</td>
+                <td>{{ mov.notes or '-' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center">Nicio miscare</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

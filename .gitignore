@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite
+.env
+venv/
+*.egg-info/
+dist/
+build/
+erp_app/static/exports/*.xlsx
+erp_app/static/exports/*.docx

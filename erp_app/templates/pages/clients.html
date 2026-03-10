@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Clienti - ERP{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Clienti</h1>
+    <div class="btn-group">
+        <a href="{{ url_for('clients.add_client') }}" class="btn btn-primary">+ Client Nou</a>
+        <a href="{{ url_for('office.excel_clients') }}" class="btn btn-excel btn-sm">Export Excel</a>
+    </div>
+</div>
+
+<div class="office-bar">
+    <span class="label">Import din Excel:</span>
+    <form action="{{ url_for('office.import_clients_route') }}" method="POST" enctype="multipart/form-data" style="display:flex;gap:8px;align-items:center">
+        <input type="file" name="file" accept=".xlsx" class="form-control" style="width:auto" required>
+        <button type="submit" class="btn btn-excel btn-sm">Importa</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Lista Clienti ({{ clients.total }})</h2>
+        <form method="GET" class="form-inline">
+            <input type="text" name="search" class="form-control" placeholder="Cauta..." value="{{ search }}" style="width:200px">
+            <button type="submit" class="btn btn-outline btn-sm">Cauta</button>
+        </form>
+    </div>
+    <div class="card-body">
+        <table>
+            <thead>
+                <tr><th>Nume</th><th>Companie</th><th>Email</th><th>Telefon</th><th>Oras</th><th>Actiuni</th></tr>
+            </thead>
+            <tbody>
+            {% for client in clients.items %}
+            <tr>
+                <td>{{ client.name }}</td>
+                <td>{{ client.company or '-' }}</td>
+                <td>{{ client.email or '-' }}</td>
+                <td>{{ client.phone or '-' }}</td>
+                <td>{{ client.city or '-' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('clients.edit_client', id=client.id) }}" class="btn btn-outline btn-sm">Editeaza</a>
+                        <form method="POST" action="{{ url_for('clients.delete_client', id=client.id) }}" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Sterge</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center">Niciun client gasit</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if clients.pages > 1 %}
+        <div class="pagination">
+            {% for page_num in clients.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    <a href="?page={{ page_num }}&search={{ search }}" class="{% if page_num == clients.page %}active{% endif %}">{{ page_num }}</a>
+                {% else %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
