@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Profil {{ angajat.nume }} {{ angajat.prenume }}{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3>{{ angajat.nume }} {{ angajat.prenume }}</h3>
+            <p class="mb-0">{{ angajat.functie or 'Fără funcție' }} &bull; {{ angajat.departament_nume }}</p>
+        </div>
+        <div>
+            <span class="badge badge-{{ angajat.status }} fs-6">{{ angajat.status }}</span>
+            <a href="{{ url_for('angajati.editare', angajat_id=angajat.id) }}" class="btn btn-light btn-sm ms-2">
+                <i class="bi bi-pencil"></i> Editare
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Info Cards -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="table-container">
+            <h5>Informații Personale</h5>
+            <table class="table table-borderless">
+                <tr><td class="text-muted">CNP</td><td>{{ angajat.cnp or '-' }}</td></tr>
+                <tr><td class="text-muted">Email</td><td>{{ angajat.email or '-' }}</td></tr>
+                <tr><td class="text-muted">Telefon</td><td>{{ angajat.telefon or '-' }}</td></tr>
+                <tr><td class="text-muted">Data Nașterii</td><td>{{ angajat.data_nasterii or '-' }}</td></tr>
+                <tr><td class="text-muted">Adresă</td><td>{{ angajat.adresa or '-' }}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="table-container">
+            <h5>Informații Profesionale</h5>
+            <table class="table table-borderless">
+                <tr><td class="text-muted">Data Angajării</td><td>{{ angajat.data_angajarii or '-' }}</td></tr>
+                <tr><td class="text-muted">Departament</td><td>{{ angajat.departament_nume }}</td></tr>
+                <tr><td class="text-muted">Funcție</td><td>{{ angajat.functie or '-' }}</td></tr>
+                <tr><td class="text-muted">Tip Contract</td><td>{{ angajat.tip_contract or '-' }}</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#pontaj-tab">
+            <i class="bi bi-clock-history"></i> Pontaj ({{ pontaj|length }})
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#concedii-tab">
+            <i class="bi bi-calendar-check"></i> Concedii ({{ concedii|length }})
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#evaluari-tab">
+            <i class="bi bi-star"></i> Evaluări ({{ evaluari|length }})
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#documente-tab">
+            <i class="bi bi-folder2-open"></i> Documente ({{ documente|length }})
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- Pontaj Tab -->
+    <div class="tab-pane fade show active" id="pontaj-tab">
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Data</th><th>Intrare</th><th>Ieșire</th><th>Ore</th><th>Tip</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in pontaj %}
+                    <tr>
+                        <td>{{ p.data }}</td>
+                        <td>{{ p.ora_intrare or '-' }}</td>
+                        <td>{{ p.ora_iesire or 'Prezent' }}</td>
+                        <td>{{ p.ore_lucrate or '-' }}</td>
+                        <td>{{ p.tip or '-' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-muted">Nicio înregistrare.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Concedii Tab -->
+    <div class="tab-pane fade" id="concedii-tab">
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Tip</th><th>Început</th><th>Sfârșit</th><th>Zile</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in concedii %}
+                    <tr>
+                        <td>{{ c.tip_concediu }}</td>
+                        <td>{{ c.data_inceput }}</td>
+                        <td>{{ c.data_sfarsit }}</td>
+                        <td>{{ c.zile_total }}</td>
+                        <td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-muted">Nicio înregistrare.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Evaluari Tab -->
+    <div class="tab-pane fade" id="evaluari-tab">
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Perioada</th><th>Scor</th><th>Data</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for e in evaluari %}
+                    <tr>
+                        <td>{{ e.perioada }}</td>
+                        <td><strong>{{ e.scor_general }}/10</strong></td>
+                        <td>{{ e.data_evaluare }}</td>
+                        <td><span class="badge badge-{{ e.status }}">{{ e.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-muted">Nicio evaluare.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Documente Tab -->
+    <div class="tab-pane fade" id="documente-tab">
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Nume Fișier</th><th>Tip</th><th>Data</th><th>Acțiuni</th></tr>
+                </thead>
+                <tbody>
+                    {% for d in documente %}
+                    <tr>
+                        <td>{{ d.nume_fisier }}</td>
+                        <td>{{ d.tip_document }}</td>
+                        <td>{{ d.data_incarcare }}</td>
+                        <td>
+                            <a href="{{ url_for('documente.descarca', doc_id=d.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-muted">Niciun document.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

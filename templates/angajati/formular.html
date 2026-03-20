@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editare' if angajat else 'Adăugare' }} Angajat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-person"></i> {{ 'Editare' if angajat else 'Adăugare' }} Angajat</h2>
+</div>
+
+<div class="form-container">
+    <form method="POST">
+        <h5 class="mb-3 text-muted">Informații Personale</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="nume" class="form-label">Nume *</label>
+                <input type="text" class="form-control" id="nume" name="nume"
+                       value="{{ angajat.nume if angajat else '' }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="prenume" class="form-label">Prenume *</label>
+                <input type="text" class="form-control" id="prenume" name="prenume"
+                       value="{{ angajat.prenume if angajat else '' }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="cnp" class="form-label">CNP</label>
+                <input type="text" class="form-control" id="cnp" name="cnp"
+                       value="{{ angajat.cnp if angajat else '' }}" maxlength="13">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       value="{{ angajat.email if angajat else '' }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="telefon" class="form-label">Telefon</label>
+                <input type="text" class="form-control" id="telefon" name="telefon"
+                       value="{{ angajat.telefon if angajat else '' }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="data_nasterii" class="form-label">Data Nașterii</label>
+                <input type="date" class="form-control" id="data_nasterii" name="data_nasterii"
+                       value="{{ angajat.data_nasterii if angajat else '' }}">
+            </div>
+        </div>
+
+        <hr>
+        <h5 class="mb-3 text-muted">Informații Profesionale</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="data_angajarii" class="form-label">Data Angajării</label>
+                <input type="date" class="form-control" id="data_angajarii" name="data_angajarii"
+                       value="{{ angajat.data_angajarii if angajat else '' }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="departament_id" class="form-label">Departament</label>
+                <select class="form-select" id="departament_id" name="departament_id">
+                    <option value="">-- Selectați --</option>
+                    {% for d in departamente %}
+                    <option value="{{ d.id }}" {% if angajat and angajat.departament_id == d.id %}selected{% endif %}>
+                        {{ d.nume }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="functie" class="form-label">Funcție</label>
+                <input type="text" class="form-control" id="functie" name="functie"
+                       value="{{ angajat.functie if angajat else '' }}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="tip_contract" class="form-label">Tip Contract</label>
+                <select class="form-select" id="tip_contract" name="tip_contract">
+                    <option value="">-- Selectați --</option>
+                    {% for tip in tip_contract_choices %}
+                    <option value="{{ tip }}" {% if angajat and angajat.tip_contract == tip %}selected{% endif %}>
+                        {{ tip }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status">
+                    {% for s in status_choices %}
+                    <option value="{{ s }}" {% if angajat and angajat.status == s %}selected{% endif %}>
+                        {{ s }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="adresa" class="form-label">Adresă</label>
+            <textarea class="form-control" id="adresa" name="adresa" rows="2">{{ angajat.adresa if angajat else '' }}</textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> {{ 'Actualizare' if angajat else 'Adăugare' }}
+            </button>
+            <a href="{{ url_for('angajati.lista') }}" class="btn btn-secondary">Anulare</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Încărcare Document{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-cloud-upload"></i> Încărcare Document</h2>
+</div>
+
+<div class="form-container">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="angajat_id" class="form-label">Angajat *</label>
+                <select class="form-select" id="angajat_id" name="angajat_id" required>
+                    <option value="">-- Selectați --</option>
+                    {% for a in angajati %}
+                    <option value="{{ a.id }}">{{ a.nume }} {{ a.prenume }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="tip_document" class="form-label">Tip Document</label>
+                <select class="form-select" id="tip_document" name="tip_document">
+                    {% for tip in tip_choices %}
+                    <option value="{{ tip }}">{{ tip }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="fisier" class="form-label">Fișier *</label>
+            <input type="file" class="form-control" id="fisier" name="fisier" required
+                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx">
+            <div class="form-text">Extensii permise: pdf, doc, docx, jpg, jpeg, png, xls, xlsx</div>
+        </div>
+        <div class="mb-3">
+            <label for="descriere" class="form-label">Descriere</label>
+            <textarea class="form-control" id="descriere" name="descriere" rows="3"></textarea>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-cloud-upload"></i> Încarcă
+            </button>
+            <a href="{{ url_for('documente.lista') }}" class="btn btn-secondary">Anulare</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Angajați{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-people"></i> Angajați</h2>
+    <a href="{{ url_for('angajati.nou') }}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> Angajat Nou
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nume</th>
+                <th>Funcție</th>
+                <th>Departament</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Status</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in angajati %}
+            <tr>
+                <td>{{ a.id }}</td>
+                <td>
+                    <a href="{{ url_for('angajati.profil', angajat_id=a.id) }}">
+                        <strong>{{ a.nume }} {{ a.prenume }}</strong>
+                    </a>
+                </td>
+                <td>{{ a.functie or '-' }}</td>
+                <td>{{ a.departament_nume }}</td>
+                <td>{{ a.email or '-' }}</td>
+                <td>{{ a.telefon or '-' }}</td>
+                <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
+                <td>
+                    <a href="{{ url_for('angajati.editare', angajat_id=a.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form action="{{ url_for('angajati.stergere', angajat_id=a.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger btn-delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-muted text-center">Niciun angajat înregistrat.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

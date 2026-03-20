@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Concedii{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-calendar-check"></i> Concedii</h2>
+    <a href="{{ url_for('concedii.cerere') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Cerere Nouă
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Angajat</th>
+                <th>Tip</th>
+                <th>Început</th>
+                <th>Sfârșit</th>
+                <th>Zile</th>
+                <th>Status</th>
+                <th>Aprobat de</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in concedii %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>{{ c.angajat_nume }}</td>
+                <td>{{ c.tip_concediu }}</td>
+                <td>{{ c.data_inceput }}</td>
+                <td>{{ c.data_sfarsit }}</td>
+                <td>{{ c.zile_total }}</td>
+                <td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+                <td>{{ c.aprobat_de_nume }}</td>
+                <td>
+                    {% if c.status == 'in_asteptare' %}
+                    <form action="{{ url_for('concedii.aprobare', concediu_id=c.id) }}" method="POST" class="d-inline">
+                        <input type="hidden" name="aprobat_de" value="1">
+                        <button type="submit" class="btn btn-sm btn-success" title="Aprobă">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </form>
+                    <form action="{{ url_for('concedii.respingere', concediu_id=c.id) }}" method="POST" class="d-inline">
+                        <input type="hidden" name="aprobat_de" value="1">
+                        <button type="submit" class="btn btn-sm btn-danger" title="Respinge">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="9" class="text-muted text-center">Nicio cerere de concediu.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

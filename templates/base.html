@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP{% endblock %} - Management Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="bi bi-building"></i> ERP</h4>
+            <small>Management Personal</small>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Principal</div>
+            <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Personal</div>
+            <a href="{{ url_for('angajati.lista') }}" class="nav-link {% if request.blueprint == 'angajati' %}active{% endif %}">
+                <i class="bi bi-people"></i> Angajați
+            </a>
+            <a href="{{ url_for('departamente.lista') }}" class="nav-link {% if request.blueprint == 'departamente' %}active{% endif %}">
+                <i class="bi bi-diagram-3"></i> Departamente
+            </a>
+            <a href="{{ url_for('pontaj.lista') }}" class="nav-link {% if request.blueprint == 'pontaj' %}active{% endif %}">
+                <i class="bi bi-clock-history"></i> Pontaj
+            </a>
+            <a href="{{ url_for('concedii.lista') }}" class="nav-link {% if request.blueprint == 'concedii' %}active{% endif %}">
+                <i class="bi bi-calendar-check"></i> Concedii
+            </a>
+            <a href="{{ url_for('evaluari.lista') }}" class="nav-link {% if request.blueprint == 'evaluari' %}active{% endif %}">
+                <i class="bi bi-star"></i> Evaluări
+            </a>
+            <a href="{{ url_for('documente.lista') }}" class="nav-link {% if request.blueprint == 'documente' %}active{% endif %}">
+                <i class="bi bi-folder2-open"></i> Documente
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Mobile toggle -->
+        <button id="sidebar-toggle" class="btn btn-outline-secondary d-md-none mb-3">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'error' else 'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
