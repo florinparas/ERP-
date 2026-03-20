@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 ERP Management Personal - Generator Excel
-Generează fișierul Excel cu modulul HR complet.
+Generează fișierul Excel cu modulul HR complet (16 foi).
 
 Utilizare:
     python generate_hr.py [--output FILENAME]
 """
 import argparse
 import sys
-from pathlib import Path
 
 try:
     from openpyxl import Workbook
@@ -22,15 +21,20 @@ from sheets import (
     departamente,
     angajati,
     contracte,
+    documente,
     pontaj,
+    ore_suplimentare,
     concedii,
     salarizare,
+    fluturasi,
     evaluari,
     training,
     recrutare,
+    organigrama,
+    istoric,
     dashboard,
 )
-from config.hr_config import SHEET_ORDER, COLORS
+from config.hr_config import COLORS
 
 
 def generate_hr_module(output_path="ERP_HR_Module.xlsx"):
@@ -40,21 +44,26 @@ def generate_hr_module(output_path="ERP_HR_Module.xlsx"):
     print("=" * 60)
 
     wb = Workbook()
-    # Ștergem foaia default
     wb.remove(wb.active)
 
-    # Creăm foile în ordinea corectă
+    # Ordinea foilor: Dashboard primul, apoi în ordine logică
+    # Configurare și Departamente trebuie create devreme (referite de celelalte)
     modules = [
         ("Dashboard", dashboard),
         ("Angajați", angajati),
         ("Contracte", contracte),
         ("Departamente", departamente),
+        ("Documente", documente),
         ("Pontaj", pontaj),
+        ("Ore Suplimentare", ore_suplimentare),
         ("Concedii", concedii),
         ("Salarizare", salarizare),
+        ("Fluturași", fluturasi),
         ("Evaluări", evaluari),
         ("Training", training),
         ("Recrutare", recrutare),
+        ("Organigramă", organigrama),
+        ("Istoric", istoric),
         ("Configurare", configurare),
     ]
 
@@ -66,19 +75,24 @@ def generate_hr_module(output_path="ERP_HR_Module.xlsx"):
             print(f"    EROARE la {sheet_name}: {e}")
             raise
 
-    # Setăm culori tab-uri
+    # Culori tab-uri
     tab_colors = {
         "Dashboard": COLORS["title_bg"],
         "Angajați": COLORS["accent"],
         "Contracte": COLORS["info"],
         "Departamente": COLORS["success"],
+        "Documente": "795548",
         "Pontaj": "FF8C00",
+        "Ore Suplimentare": "E65100",
         "Concedii": COLORS["info"],
         "Salarizare": "70AD47",
+        "Fluturași": "43A047",
         "Evaluări": "9C27B0",
         "Training": "FF9800",
         "Recrutare": "00BCD4",
-        "Configurare": "757575",
+        "Organigramă": "3F51B5",
+        "Istoric": "757575",
+        "Configurare": "607D8B",
     }
 
     for sheet_name, color in tab_colors.items():

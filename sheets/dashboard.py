@@ -37,9 +37,9 @@ def create_sheet(wb):
          '=COUNTIFS(Recrutare!J3:J1000,"<>Angajat",Recrutare!J3:J1000,"<>Respins",Recrutare!J3:J1000,"<>Retras",Recrutare!J3:J1000,"<>")',
          COLORS["warning"]),
         (9, "Fond Salarii Lunar",
-         "=SUM(Salarizare!Q3:Q100)", "2E75B6"),
+         "=SUM(Salarizare!V3:V100)", "2E75B6"),
         (11, "Cost Total Angajator",
-         "=SUM(Salarizare!S3:S100)", COLORS["danger"]),
+         "=SUM(Salarizare!X3:X100)", COLORS["danger"]),
     ]
 
     for start_col, label, formula, color in kpi_configs:
@@ -95,10 +95,14 @@ def create_sheet(wb):
          '=COUNTIFS(Contracte!G3:G1000,">="&TODAY(),Contracte!G3:G1000,"<="&TODAY()+30)'),
         ("Evaluări scadente în 30 zile:",
          '=COUNTIFS(\'Evaluări\'!N3:N1000,">="&TODAY(),\'Evaluări\'!N3:N1000,"<="&TODAY()+30)'),
+        ("Documente expirate:",
+         '=COUNTIF(Documente!I3:I1000,"Expirat")'),
         ("Certificări care expiră în 90 zile:",
          '=COUNTIFS(Training!M3:M1000,">="&TODAY(),Training!M3:M1000,"<="&TODAY()+90)'),
         ("Concedii în așteptare:",
          '=COUNTIF(Concedii!H3:H1000,"În Așteptare")'),
+        ("Ore suplimentare nesoluționate:",
+         '=COUNTIF(\'Ore Suplimentare\'!L3:L1000,"Solicitat")'),
         ("Candidați în proces recrutare:",
          '=COUNTIFS(Recrutare!J3:J1000,"<>Angajat",Recrutare!J3:J1000,"<>Respins",Recrutare!J3:J1000,"<>Retras",Recrutare!J3:J1000,"<>")'),
     ]
@@ -118,24 +122,25 @@ def create_sheet(wb):
     # ============================================================
     # SECȚIUNEA SUMAR SALARIZARE (coloana A, rândul 28+)
     # ============================================================
-    ws.merge_cells("A28:C28")
-    sal_header = ws.cell(row=28, column=1, value="SUMAR SALARIZARE")
+    ws.merge_cells("A30:C30")
+    sal_header = ws.cell(row=30, column=1, value="SUMAR SALARIZARE")
     sal_header.font = Font(name="Calibri", size=12, bold=True,
                             color=COLORS["header_font"])
     sal_header.fill = PatternFill(start_color=COLORS["accent"],
                                    end_color=COLORS["accent"], fill_type="solid")
 
     sal_items = [
-        ("Total Salarii Brute:", "=SUM(Salarizare!I3:I100)"),
-        ("Total CAS (pensie):", "=SUM(Salarizare!J3:J100)"),
-        ("Total CASS (sănătate):", "=SUM(Salarizare!K3:K100)"),
-        ("Total Impozit:", "=SUM(Salarizare!N3:N100)"),
-        ("Total Salarii Nete:", "=SUM(Salarizare!Q3:Q100)"),
-        ("Total CAM (angajator):", "=SUM(Salarizare!R3:R100)"),
-        ("Cost Total Companie:", "=SUM(Salarizare!S3:S100)"),
+        ("Total Brut (incl. OS, CO):", "=SUM(Salarizare!L3:L100)"),
+        ("Total CAS (pensie):", "=SUM(Salarizare!M3:M100)"),
+        ("Total CASS (sănătate):", "=SUM(Salarizare!N3:N100)"),
+        ("Total Impozit:", "=SUM(Salarizare!R3:R100)"),
+        ("Total Rețineri:", "=SUM(Salarizare!U3:U100)"),
+        ("Total Salarii Nete:", "=SUM(Salarizare!V3:V100)"),
+        ("Total CAM (angajator):", "=SUM(Salarizare!W3:W100)"),
+        ("Cost Total Companie:", "=SUM(Salarizare!X3:X100)"),
     ]
 
-    for idx, (label, formula) in enumerate(sal_items, 29):
+    for idx, (label, formula) in enumerate(sal_items, 31):
         ws.cell(row=idx, column=1, value=label).font = Font(name="Calibri", size=10)
         val_cell = ws.cell(row=idx, column=3)
         val_cell.value = formula
@@ -154,9 +159,10 @@ def create_sheet(wb):
                                    end_color=COLORS["accent"], fill_type="solid")
 
     nav_items = [
-        "Angajați", "Contracte", "Departamente", "Pontaj",
-        "Concedii", "Salarizare", "Evaluări", "Training",
-        "Recrutare", "Configurare"
+        "Angajați", "Contracte", "Departamente", "Documente",
+        "Pontaj", "Ore Suplimentare", "Concedii", "Salarizare",
+        "Fluturași", "Evaluări", "Training", "Recrutare",
+        "Organigramă", "Istoric", "Configurare",
     ]
 
     for idx, sheet_name in enumerate(nav_items, 21):

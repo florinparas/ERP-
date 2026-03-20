@@ -4,21 +4,26 @@ Sistem ERP în Excel pentru managementul de personal, generat cu Python (openpyx
 
 ## Modul HR - Management Personal
 
-Fișierul Excel generat conține 11 foi:
+Fișierul Excel generat conține **16 foi**:
 
 | Foaie | Descriere |
 |-------|-----------|
-| Dashboard | Panou principal cu KPI-uri, grafice și navigare rapidă |
-| Angajați | Evidența completă a personalului |
-| Contracte | Contracte de muncă cu VLOOKUP la angajați |
-| Departamente | Departamente & funcții cu grile salariale |
-| Pontaj | Pontaj lunar cu coduri prezență și totaluri automate |
-| Concedii | Management concedii cu calcul zile rămase |
-| Salarizare | Calcul salarii conform legislației RO 2025 (CAS 25%, CASS 10%, Impozit 10%) |
-| Evaluări | Evaluări performanță cu scoruri 1-5 |
-| Training | Cursuri & formări profesionale |
-| Recrutare | Proces recrutare candidați |
-| Configurare | Parametri fiscali, date companie, liste dropdown |
+| Dashboard | Panou principal cu KPI-uri, grafic distribuție, alerte, navigare rapidă |
+| Angajați | Evidența completă a personalului cu validări și formatare condițională |
+| Contracte | Contracte de muncă cu VLOOKUP, alertă expirare |
+| Departamente | Departamente & funcții cu grile salariale, COUNTIF angajați |
+| Documente | Management documente angajați cu status automat (valid/expirat) |
+| Pontaj | Pontaj lunar cu 31 coloane zile, coduri colorate, totaluri automate |
+| Ore Suplimentare | Evidență ore suplimentare cu calcul valoare brută (spor 75%/100%) |
+| Concedii | Management concedii cu calcul zile rămase (NETWORKDAYS) |
+| Salarizare | Stat de plată complet: brut, ore suplimentare, deducere personală, net |
+| Fluturași | Fluturași de salariu print-ready (selectare angajat dinamic) |
+| Evaluări | Evaluări performanță cu scoruri 1-5 și scor final automat |
+| Training | Cursuri & formări profesionale cu alertă expirare certificări |
+| Recrutare | Proces recrutare candidați cu pipeline statusuri |
+| Organigramă | Vizualizare ierarhie organizațională (date + tree view) |
+| Istoric | Audit trail - jurnal modificări (manual sau VBA) |
+| Configurare | Parametri fiscali, date companie, sărbători legale, liste dropdown |
 
 ## Instalare & Generare
 
@@ -47,3 +52,4 @@ Pentru import: Excel → Alt+F11 → File → Import File → selectați fișier
 - Impozit pe venit: 10% (flat tax)
 - CAM (Angajator): 2.25%
 - Salariu minim brut: 4.050 RON
+- Deducere personală: variabilă (funcție de venit și persoane în întreținere)
