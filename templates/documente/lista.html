@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Documente{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-folder2-open"></i> Documente</h2>
+    <a href="{{ url_for('documente.upload') }}" class="btn btn-primary">
+        <i class="bi bi-cloud-upload"></i> Încarcă Document
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Angajat</th>
+                <th>Nume Fișier</th>
+                <th>Tip</th>
+                <th>Data Încărcare</th>
+                <th>Descriere</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in documente %}
+            <tr>
+                <td>{{ d.id }}</td>
+                <td>{{ d.angajat_nume }}</td>
+                <td>{{ d.nume_fisier }}</td>
+                <td><span class="badge bg-info">{{ d.tip_document }}</span></td>
+                <td>{{ d.data_incarcare }}</td>
+                <td>{{ d.descriere or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('documente.descarca', doc_id=d.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-download"></i>
+                    </a>
+                    <form action="{{ url_for('documente.stergere', doc_id=d.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger btn-delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-muted text-center">Niciun document încărcat.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Înregistrare Pontaj{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-clock"></i> Înregistrare Pontaj</h2>
+</div>
+
+<div class="row">
+    <!-- Check-In Form -->
+    <div class="col-md-6 mb-4">
+        <div class="form-container">
+            <h5 class="text-success"><i class="bi bi-box-arrow-in-right"></i> Check-In</h5>
+            <form method="POST">
+                <input type="hidden" name="action" value="check_in">
+                <div class="mb-3">
+                    <label for="angajat_id" class="form-label">Angajat *</label>
+                    <select class="form-select" id="angajat_id" name="angajat_id" required>
+                        <option value="">-- Selectați --</option>
+                        {% for a in angajati %}
+                        <option value="{{ a.id }}">{{ a.nume }} {{ a.prenume }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="tip" class="form-label">Tip</label>
+                    <select class="form-select" id="tip" name="tip">
+                        {% for t in tip_choices %}
+                        <option value="{{ t }}">{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="observatii" class="form-label">Observații</label>
+                    <input type="text" class="form-control" id="observatii" name="observatii">
+                </div>
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-box-arrow-in-right"></i> Check-In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Check-Out: Currently present employees -->
+    <div class="col-md-6 mb-4">
+        <div class="form-container">
+            <h5 class="text-danger"><i class="bi bi-box-arrow-right"></i> Check-Out</h5>
+            {% if prezenti %}
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Angajat</th><th>Intrare</th><th>Acțiune</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in prezenti %}
+                    <tr>
+                        <td>{{ p.angajat_nume }}</td>
+                        <td>{{ p.ora_intrare }}</td>
+                        <td>
+                            <form method="POST" class="d-inline">
+                                <input type="hidden" name="action" value="check_out">
+                                <input type="hidden" name="pontaj_id" value="{{ p.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-box-arrow-right"></i> Check-Out
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">Niciun angajat prezent momentan.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editare' if evaluare else 'Adăugare' }} Evaluare{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-star"></i> {{ 'Editare' if evaluare else 'Adăugare' }} Evaluare</h2>
+</div>
+
+<div class="form-container">
+    <form method="POST">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="angajat_id" class="form-label">Angajat Evaluat *</label>
+                <select class="form-select" id="angajat_id" name="angajat_id" required>
+                    <option value="">-- Selectați --</option>
+                    {% for a in angajati %}
+                    <option value="{{ a.id }}" {% if evaluare and evaluare.angajat_id == a.id %}selected{% endif %}>
+                        {{ a.nume }} {{ a.prenume }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="evaluator_id" class="form-label">Evaluator *</label>
+                <select class="form-select" id="evaluator_id" name="evaluator_id" required>
+                    <option value="">-- Selectați --</option>
+                    {% for a in angajati %}
+                    <option value="{{ a.id }}" {% if evaluare and evaluare.evaluator_id == a.id %}selected{% endif %}>
+                        {{ a.nume }} {{ a.prenume }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="perioada" class="form-label">Perioada</label>
+                <input type="text" class="form-control" id="perioada" name="perioada"
+                       value="{{ evaluare.perioada if evaluare else '' }}" placeholder="ex: 2026-Q1">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="scor_general" class="form-label">Scor General (1-10) *</label>
+                <input type="number" class="form-control" id="scor_general" name="scor_general"
+                       value="{{ evaluare.scor_general if evaluare else '' }}" min="1" max="10" step="0.5" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status">
+                    {% for s in status_choices %}
+                    <option value="{{ s }}" {% if evaluare and evaluare.status == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="obiective" class="form-label">Evaluare Obiective</label>
+            <textarea class="form-control" id="obiective" name="obiective" rows="3">{{ evaluare.obiective if evaluare else '' }}</textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="puncte_forte" class="form-label">Puncte Forte</label>
+                <textarea class="form-control" id="puncte_forte" name="puncte_forte" rows="3">{{ evaluare.puncte_forte if evaluare else '' }}</textarea>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="puncte_slabe" class="form-label">Puncte Slabe</label>
+                <textarea class="form-control" id="puncte_slabe" name="puncte_slabe" rows="3">{{ evaluare.puncte_slabe if evaluare else '' }}</textarea>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="comentarii" class="form-label">Comentarii</label>
+            <textarea class="form-control" id="comentarii" name="comentarii" rows="3">{{ evaluare.comentarii if evaluare else '' }}</textarea>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> {{ 'Actualizare' if evaluare else 'Adăugare' }}
+            </button>
+            <a href="{{ url_for('evaluari.lista') }}" class="btn btn-secondary">Anulare</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

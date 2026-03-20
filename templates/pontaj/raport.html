@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Raport Pontaj{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-file-earmark-bar-graph"></i> Raport Pontaj Lunar</h2>
+</div>
+
+<div class="form-container mb-4">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="angajat_id" class="form-label">Angajat</label>
+            <select class="form-select" id="angajat_id" name="angajat_id" required>
+                <option value="">-- Selectați --</option>
+                {% for a in angajati %}
+                <option value="{{ a.id }}" {% if angajat_id|string == a.id|string %}selected{% endif %}>
+                    {{ a.nume }} {{ a.prenume }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="luna" class="form-label">Luna</label>
+            <select class="form-select" id="luna" name="luna">
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if luna == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="an" class="form-label">An</label>
+            <input type="number" class="form-control" id="an" name="an" value="{{ an }}" min="2020" max="2030">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> Generare Raport
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if pontaj %}
+<div class="table-container">
+    <div class="d-flex justify-content-between mb-3">
+        <h5>Rezultate</h5>
+        <span class="badge bg-primary fs-6">Total ore: {{ total_ore }}</span>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr><th>Data</th><th>Intrare</th><th>Ieșire</th><th>Ore Lucrate</th><th>Tip</th><th>Observații</th></tr>
+        </thead>
+        <tbody>
+            {% for p in pontaj %}
+            <tr>
+                <td>{{ p.data }}</td>
+                <td>{{ p.ora_intrare or '-' }}</td>
+                <td>{{ p.ora_iesire or 'Prezent' }}</td>
+                <td>{{ p.ore_lucrate or '-' }}</td>
+                <td>{{ p.tip or '-' }}</td>
+                <td>{{ p.observatii or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% elif angajat_id %}
+<div class="alert alert-info">Nicio înregistrare de pontaj pentru perioada selectată.</div>
+{% endif %}
+{% endblock %}

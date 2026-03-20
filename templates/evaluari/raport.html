@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Evaluare - {{ evaluare.angajat_nume }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-star"></i> Evaluare Performanță</h2>
+    <div>
+        <a href="{{ url_for('evaluari.editare', evaluare_id=evaluare.id) }}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Editare
+        </a>
+        <a href="{{ url_for('evaluari.lista') }}" class="btn btn-outline-secondary">Înapoi</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="form-container text-center">
+            <h5>Scor General</h5>
+            <div class="metric-value" style="font-size: 3rem; color: {% if evaluare.scor_general >= 7 %}#27ae60{% elif evaluare.scor_general >= 4 %}#f39c12{% else %}#e74c3c{% endif %};">
+                {{ evaluare.scor_general }}/10
+            </div>
+            <div class="progress mb-3" style="height: 10px;">
+                <div class="progress-bar {% if evaluare.scor_general >= 7 %}bg-success{% elif evaluare.scor_general >= 4 %}bg-warning{% else %}bg-danger{% endif %}"
+                     style="width: {{ (evaluare.scor_general|float / 10 * 100)|int }}%"></div>
+            </div>
+            <p class="text-muted mb-1">Angajat: <strong>{{ evaluare.angajat_nume }}</strong></p>
+            <p class="text-muted mb-1">Evaluator: <strong>{{ evaluare.evaluator_nume }}</strong></p>
+            <p class="text-muted mb-1">Perioada: {{ evaluare.perioada }}</p>
+            <p class="text-muted mb-0">Data: {{ evaluare.data_evaluare }}</p>
+            <span class="badge badge-{{ evaluare.status }} mt-2">{{ evaluare.status }}</span>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-container mb-3">
+            <h5>Evaluare Obiective</h5>
+            <p>{{ evaluare.obiective or 'N/A' }}</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-container h-100">
+                    <h5 class="text-success"><i class="bi bi-hand-thumbs-up"></i> Puncte Forte</h5>
+                    <p>{{ evaluare.puncte_forte or 'N/A' }}</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="form-container h-100">
+                    <h5 class="text-danger"><i class="bi bi-hand-thumbs-down"></i> Puncte Slabe</h5>
+                    <p>{{ evaluare.puncte_slabe or 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-container">
+            <h5>Comentarii</h5>
+            <p>{{ evaluare.comentarii or 'N/A' }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
