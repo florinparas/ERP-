@@ -1,5 +1,4 @@
-# Generated Excel files
-*.xlsx
+# Generated Excel files (keep ERP_HR_Module.xlsx in repo)
 *.xlsm
 
 # Python
